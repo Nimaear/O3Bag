@@ -1,0 +1,16 @@
+## Interface: 60000
+## DefaultState: Enabled
+## Title: |cFF007FFFO3|r Bag
+## Author: Oz
+## Version: 0.1
+## Notes: O3 Bags
+## RequiredDeps: O3
+
+Button.lua
+Container.lua
+Panel\Search.lua
+Panel\BagChanger.lua
+Handler.lua
+Bag.lua
+Implementation\Inventory.lua
+Implementation\Bank.lua
