@@ -4,7 +4,6 @@ local O3 = O3
 local Bag = O3.UI.Window:extend({
 	name = 'O3Bag',
 	titleText = 'O3Bag',
-	frameStrata = 'HIGH',
 	closeWithEscape = true,
 	postInit = function (self)
 		self.buttons[0]	= {}

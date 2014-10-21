@@ -3,22 +3,22 @@ local O3 = O3
 
 local BankButton = ns.BagButton:extend({
 	template = 'BankItemButtonGenericTemplate',
-	hook = function (self)
-		self.frame:SetScript('OnEnter', function (frame)
-			self.icon:SetVertexColor(0.8,0.8,1,1)
-			if (self.itemLink) then
-				GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
-				GameTooltip:SetHyperlink(self.itemLink)
-			else
-				GameTooltip:Hide()
-			end
-		end)
-		self.frame:SetScript('OnLeave', function (frame)
-			self.icon:SetVertexColor(1,1,1,1)
-			GameTooltip:Hide()
-            ResetCursor()
-		end)
-	end,
+	-- hook = function (self)
+	-- 	self.frame:SetScript('OnEnter', function (frame)
+	-- 		self.icon:SetVertexColor(0.8,0.8,1,1)
+	-- 		if (self.itemLink) then
+	-- 			GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
+	-- 			GameTooltip:SetHyperlink(self.itemLink)
+	-- 		else
+	-- 			GameTooltip:Hide()
+	-- 		end
+	-- 	end)
+	-- 	self.frame:SetScript('OnLeave', function (frame)
+	-- 		self.icon:SetVertexColor(1,1,1,1)
+	-- 		GameTooltip:Hide()
+ --            ResetCursor()
+	-- 	end)
+	-- end,
 })
 
 local Bank = ns.Bag:extend({

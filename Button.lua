@@ -200,6 +200,21 @@ ns.BagButton = O3.UI.Button:extend({
 	unlock = function (self)
 		self.icon:SetDesaturated(false)
 	end,
+		-- 	self.frame:SetScript('OnEnter', function (frame)
+		-- 	self.icon:SetVertexColor(0.8,0.8,1,1)
+		-- 	if (self.itemLink) then
+		-- 		GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
+		-- 		GameTooltip:SetHyperlink(self.itemLink)
+		-- 	else
+		-- 		GameTooltip:Hide()
+		-- 	end
+		-- end)
+		-- self.frame:SetScript('OnLeave', function (frame)
+		-- 	self.icon:SetVertexColor(1,1,1,1)
+		-- 	GameTooltip:Hide()
+  --           ResetCursor()
+		-- end)
+
 	onEnter = function (self, frame)
 		local x = frame:GetRight()
 		if ( x >= ( GetScreenWidth() / 2 ) ) then
@@ -211,8 +226,11 @@ ns.BagButton = O3.UI.Button:extend({
 		-- self.icon:SetVertexColor(0.8,0.8,1,1)
 		-- local hasCooldown, repairCost, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetBagItem(self.bag, self.slot)
 
-		if (self.itemName) then
-			GameTooltip:SetBagItem(self.bag, self.slot)
+		-- if (self.itemName) then
+		-- 	GameTooltip:SetBagItem(self.bag, self.slot)
+		-- end
+		if (self.itemLink) then
+			GameTooltip:SetHyperlink(self.itemLink)
 		end
 
 		if (O3.Merchant and O3.Merchant.open) then

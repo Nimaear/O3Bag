@@ -6,7 +6,6 @@ local Inventory = ns.Bag:extend({
 	name = 'O3Inventory',
 	title = 'O3',
 	subTitle = 'Inventory',
-	frameStrata = 'HIGH',
 	containers = {},
 	bagFrame = {},
 	offset = {nil, 100, nil, 100},
