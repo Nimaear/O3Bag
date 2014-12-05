@@ -3,22 +3,28 @@ local O3 = O3
 
 local BankButton = ns.BagButton:extend({
 	template = 'BankItemButtonGenericTemplate',
-	-- hook = function (self)
-	-- 	self.frame:SetScript('OnEnter', function (frame)
-	-- 		self.icon:SetVertexColor(0.8,0.8,1,1)
-	-- 		if (self.itemLink) then
-	-- 			GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
-	-- 			GameTooltip:SetHyperlink(self.itemLink)
-	-- 		else
-	-- 			GameTooltip:Hide()
-	-- 		end
-	-- 	end)
-	-- 	self.frame:SetScript('OnLeave', function (frame)
-	-- 		self.icon:SetVertexColor(1,1,1,1)
-	-- 		GameTooltip:Hide()
- --            ResetCursor()
-	-- 	end)
-	-- end,
+	hook = function (self)
+		self.frame:SetScript('OnEnter', function (button)
+			GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+			self.icon:SetVertexColor(0.8,0.8,1,1)
+				if (self.bag == REAGENTBANK_CONTAINER) then
+					local hasItem, hasCooldown, repairCost, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetInventoryItem("player", ReagentBankButtonIDToInvSlotID(self.slot))	
+				else
+					local hasItem, hasCooldown, repairCost, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetInventoryItem("player", button:GetInventorySlot())
+				end
+				
+				button.UpdateTooltip  = function ()
+				end
+
+				GameTooltip:Show()
+				CursorUpdate(button)
+		end)
+		self.frame:SetScript('OnLeave', function (frame)
+			self.icon:SetVertexColor(1,1,1,1)
+			GameTooltip:Hide()
+            ResetCursor()
+		end)
+	end,
 })
 
 local Bank = ns.Bag:extend({
@@ -41,7 +47,7 @@ local Bank = ns.Bag:extend({
 		
 	},	
 	config = {
-		columns = 12,
+		columns = 18,
 		buttonSize = 32,
 		XOffset = 100,
 		YOffset = 100,
@@ -51,6 +57,9 @@ local Bank = ns.Bag:extend({
 	},	
 	containerButtons = {},
 	postInit = function (self)
+		if IsReagentBankUnlocked() then
+			self.buttons[REAGENTBANK_CONTAINER] = {}
+		end
 		self.buttons[BANK_CONTAINER] = {}
 		for i = NUM_BAG_SLOTS+1, NUM_BAG_SLOTS+NUM_BANKBAGSLOTS  do
 			self.buttons[i] = {}
@@ -83,7 +92,7 @@ local Bank = ns.Bag:extend({
 				parentFrame = self.header.frame,
 				width = 20,
 				height = 20,
-				text = '',
+				text = '',
 				onClick = function (control)
 					PurchaseSlot()
 					if GetBankSlotCost() == 999999999 then
@@ -91,15 +100,37 @@ local Bank = ns.Bag:extend({
 					end
 				end,
 			}))
-
 		end
 
-
+		self.header:addButton(O3.UI.GlyphButton:instance({
+			parentFrame = self.header.frame,
+			width = 20,
+			height = 20,
+			text = '',
+			onClick = function (control)
+				if IsReagentBankUnlocked() then
+					DepositReagentBank()
+				else
+					BuyReagentBank()
+					self.buttons[REAGENTBANK_CONTAINER] = {}
+					self:refresh()
+				end
+			end,
+		}))
+	end,
+	createContainers = function (self)
+		self:createContainer({
+			titleText = 'Reagents',
+			takes = function (self, button)
+				return button.bag == REAGENTBANK_CONTAINER
+			end,
+		})
+		self._parent.createContainers(self)
 	end,
 	createButton = function (self, bag, slot)
 		local bagFrame = self.bagFrame[bag] or self:createBagFrame(bag)
 		local button
-		if bag == BANK_CONTAINER then
+		if bag == BANK_CONTAINER or bag == REAGENTBANK_CONTAINER then
 			button = BankButton:instance({
 				parentFrame = bagFrame,
 				bag = bag,
@@ -131,6 +162,19 @@ local Bank = ns.Bag:extend({
 		if self.bankOpen then
 			CloseBankFrame()
 		end
+	end,
+	onShow = function (self)
+		if IsReagentBankUnlocked() and not self.buttons[REAGENTBANK_CONTAINER] then
+			self.buttons[REAGENTBANK_CONTAINER] = {}
+		end
+		for bag, buttons in pairs(self.buttons) do
+			for slot = 1, #buttons do
+				local button = buttons[slot]
+				button:refresh()
+			end
+		end
+		self.bagChangerPanel:update()
+		self:refresh()
 	end,	
 	BANKFRAME_CLOSED = function (self)
 		self.bankOpen = false

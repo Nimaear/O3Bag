@@ -15,7 +15,8 @@ local Inventory = ns.Bag:extend({
 		BAG_UPDATE_DELAYED = true,
 		ITEM_UNLOCKED = true,
 		BAG_UPDATE_COOLDOWN = true,
-		ITEM_LOCK_CHANGED = true,				
+		ITEM_LOCK_CHANGED = true,
+		BANKFRAME_OPENED = true,
 	},
 	config = {
 		columns = 12,
@@ -42,6 +43,9 @@ local Inventory = ns.Bag:extend({
 	PLAYER_MONEY = function (self)
 		self.moneyText:SetText(O3:formatMoney(GetMoney()))
 	end,
+	BANKFRAME_OPENED = function (self)
+		self:show()
+	end,	
 	hideBlizzardCrap = function (self)
 		for i = 1, NUM_CONTAINER_FRAMES do
 			local frame = _G["ContainerFrame"..i]

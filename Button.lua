@@ -223,19 +223,44 @@ ns.BagButton = O3.UI.Button:extend({
 			GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
 		end
 
-		-- self.icon:SetVertexColor(0.8,0.8,1,1)
-		-- local hasCooldown, repairCost, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetBagItem(self.bag, self.slot)
-
-		-- if (self.itemName) then
-		-- 	GameTooltip:SetBagItem(self.bag, self.slot)
-		-- end
-		if (self.itemLink) then
-			GameTooltip:SetHyperlink(self.itemLink)
+		local showSell = nil;
+		local hasCooldown, repairCost, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetBagItem(self.bag, self.slot)
+		if(speciesID and speciesID > 0) then
+			BattlePetToolTip_Show(speciesID, level, breedQuality, maxHealth, power, speed, name)
+			return
+		else
+			if (BattlePetTooltip) then
+				BattlePetTooltip:Hide()
+			end
 		end
+
+		if ( InRepairMode() and (repairCost and repairCost > 0) ) then
+			GameTooltip:AddLine(REPAIR_COST, nil, nil, nil, true);
+			SetTooltipMoney(GameTooltip, repairCost);
+			GameTooltip:Show()
+		elseif ( MerchantFrame:IsShown() and MerchantFrame.selectedTab == 1 ) then
+			showSell = 1
+		end
+
 
 		if (O3.Merchant and O3.Merchant.open) then
 			SetCursor('BUY_CURSOR')
 		end
+
+
+		if ( IsModifiedClick("DRESSUP") and frame.hasItem ) then
+			ShowInspectCursor()
+		elseif ( showSell ) then
+			ShowContainerSellCursor(self.bag, self.slot)
+		elseif ( self.readable ) then
+			ShowInspectCursor()
+		else
+			ResetCursor()
+		end
+
+		frame.UpdateTooltip  = function ()
+		end
+
 
 		-- GameTooltip:SetHyperlink(self.itemLink)
 		--CursorUpdate(frame)

@@ -231,6 +231,12 @@ local Bag = O3.UI.Window:extend({
 	end,
 	createContainers = function (self)
 		self:createContainer({
+			titleText = 'Reagents',
+			takes = function (self, button)
+				return button.bag == REAGENTBANK_CONTAINER
+			end,
+		})
+		self:createContainer({
 			titleText = 'Trash',
 			takes = function (self, button)
 				local quality = button.itemLink and button.quality
